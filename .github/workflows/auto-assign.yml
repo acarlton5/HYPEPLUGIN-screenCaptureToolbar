@@ -1,0 +1,33 @@
+name: Auto Assign Issues & PRs
+on:
+  issues:
+    types: [opened]
+  pull_request:
+    types: [opened, reopened, synchronize]
+
+jobs:
+  assign:
+    # Fork PR runs get a read-only GITHUB_TOKEN; addAssignees fails with HttpError /
+    # "Resource not accessible by integration". Assign only when the PR branch lives
+    # in this repo; external forks skip this job cleanly (checks stay green).
+    if: >-
+      github.event_name == 'issues' ||
+      github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+      pull-requests: write
+
+    steps:
+      - name: Assign to me
+        # v9 runs on a current runner Node; avoids deprecated Node 20 runtime for v7.
+        uses: actions/github-script@v9
+        with:
+          script: |
+            github.rest.issues.addAssignees({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              assignees: ['JDKamalakar']
+            })
