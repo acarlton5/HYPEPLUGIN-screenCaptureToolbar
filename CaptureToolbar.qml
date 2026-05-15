@@ -130,7 +130,7 @@ PluginComponent {
     }
 
     function takeScreenshot() {
-        let dmsStr = "dms screenshot";
+        let dmsStr = "hype screenshot";
         if (root.captureMode === "full") dmsStr += " full";
         else if (root.captureMode === "all") dmsStr += " all";
         else if (root.captureMode === "window") dmsStr += " window";
@@ -185,8 +185,8 @@ PluginComponent {
         if (root.captureMode === "interactive") {
             // Portal alone is unreliable on niri / some Wayland compositors; use slurp + -w region when available.
             scriptBody =
-                "cancel_rec() { command -v dms >/dev/null 2>&1 && ( dms ipc call screenCaptureToolbar cancelRecording 2>/dev/null || dms ipc screenCaptureToolbar cancelRecording 2>/dev/null ); }; " +
-                "start_rec() { command -v dms >/dev/null 2>&1 && ( dms ipc call screenCaptureToolbar recordingStarted 2>/dev/null || dms ipc screenCaptureToolbar recordingStarted 2>/dev/null ); }; " +
+                "cancel_rec() { command -v hype >/dev/null 2>&1 && ( hype ipc call screenCaptureToolbar cancelRecording 2>/dev/null || hype ipc screenCaptureToolbar cancelRecording 2>/dev/null ); }; " +
+                "start_rec() { command -v hype >/dev/null 2>&1 && ( hype ipc call screenCaptureToolbar recordingStarted 2>/dev/null || hype ipc screenCaptureToolbar recordingStarted 2>/dev/null ); }; " +
                 "sleep 0.2; mkdir -p \"" + dir + "\"; " +
                 "if command -v slurp >/dev/null 2>&1; then " +
                 "REGION=$(slurp -f '%wx%h+%x+%y') || { cancel_rec; exit 1; }; " +
@@ -890,7 +890,7 @@ PluginComponent {
     }
 
     Component.onCompleted: {
-        console.info("screenCaptureToolbar: daemon loaded — use 'dms ipc screenCaptureToolbar toggle' to open");
+        console.info("screenCaptureToolbar: daemon loaded — use 'hype ipc screenCaptureToolbar toggle' to open");
     }
 
     DankTooltipV2 {
@@ -1215,7 +1215,7 @@ PluginComponent {
                 PillActionBtn {
                     iconName: "photo_camera"
                     onClicked: {
-                        let ssCmd = "dms screenshot";
+                        let ssCmd = "hype screenshot";
                         ssCmd += root.showPointer ? " --cursor=on" : " --cursor=off";
                         ssCmd += " -f " + root.format;
                         Quickshell.execDetached(["bash", "-c", ssCmd]);
